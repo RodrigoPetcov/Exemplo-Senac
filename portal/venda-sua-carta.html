@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Venda sua Carta Contemplada</title>
+  <meta name="description" content="Venda sua carta de consórcio contemplada com rapidez e segurança. Receba uma proposta pelo WhatsApp.">
+  <link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+  <div id="site-topo"></div>
+
+  <section class="cabecalho-pagina">
+    <div class="container">
+      <div class="migalha"><a href="index.html">Início</a> › Venda sua Carta</div>
+      <h1>Venda sua carta contemplada</h1>
+      <p>Transforme sua cota contemplada em dinheiro com rapidez e segurança.</p>
+    </div>
+  </section>
+
+  <main class="secao">
+    <div class="container grade-2">
+      <div>
+        <h2 style="text-align:left">Por que vender com a gente?</h2>
+        <ul class="lista-check">
+          <li>Avaliação gratuita e sem compromisso</li>
+          <li>Pagamento rápido após a transferência</li>
+          <li>Todo o processo junto à administradora é feito por nós</li>
+          <li>Contrato e transparência em todas as etapas</li>
+          <li>Também avaliamos cotas não contempladas e canceladas</li>
+        </ul>
+        <p>Preencha o formulário e envie. Um consultor vai responder pelo WhatsApp com uma proposta.</p>
+      </div>
+
+      <form id="formVenda" class="caixa form-grid">
+        <label class="campo inteiro">Nome completo
+          <input name="nome" required>
+        </label>
+        <label class="campo">Telefone / WhatsApp
+          <input name="telefone" type="tel" required>
+        </label>
+        <label class="campo">Cidade/UF
+          <input name="cidade">
+        </label>
+        <label class="campo">Administradora
+          <input name="administradora" required>
+        </label>
+        <label class="campo">Tipo
+          <select name="tipo"><option>Imóvel</option><option>Veículo</option><option>Outro</option></select>
+        </label>
+        <label class="campo">Valor do crédito (R$)
+          <input name="credito" type="number" min="0" step="100">
+        </label>
+        <label class="campo">Situação
+          <select name="situacao"><option>Contemplada</option><option>Não contemplada</option><option>Cancelada</option></select>
+        </label>
+        <label class="campo inteiro">Observações
+          <textarea name="obs" rows="3" placeholder="Parcelas pagas, parcelas restantes, valor da parcela…"></textarea>
+        </label>
+        <button class="btn inteiro">Enviar pelo WhatsApp</button>
+      </form>
+    </div>
+  </main>
+
+  <div id="site-rodape"></div>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/dados.js"></script>
+  <script src="assets/js/layout.js"></script>
+  <script>
+    document.getElementById("formVenda").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const d = Object.fromEntries(new FormData(e.target));
+      const credito = d.credito ? Cartas.brl.format(+d.credito) : "não informado";
+      const msg = `Olá! Quero vender minha carta.\n` +
+        `Nome: ${d.nome}\nTelefone: ${d.telefone}\nCidade: ${d.cidade}\n` +
+        `Administradora: ${d.administradora}\nTipo: ${d.tipo}\nCrédito: ${credito}\n` +
+        `Situação: ${d.situacao}\nObservações: ${d.obs}`;
+      window.open(Cartas.linkWhats(msg), "_blank", "noopener");
+    });
+  </script>
+</body>
+</html>

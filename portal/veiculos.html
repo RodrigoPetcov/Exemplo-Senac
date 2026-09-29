@@ -3,37 +3,36 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Consórcios Contemplados de Imóveis</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Cartas Contempladas de Veículos</title>
+  <meta name="description" content="Consórcios contemplados de veículos prontos para uso. Consulte crédito, entrada e parcelas e reserve pelo WhatsApp.">
+  <link rel="stylesheet" href="assets/css/site.css">
 </head>
-<body>
-  <header class="topo">
-    <div class="container">
-      <h1>Consórcios Contemplados de Imóveis</h1>
-      <p>Cartas de crédito contempladas prontas para uso. Selecione uma ou mais cartas e reserve pelo WhatsApp.</p>
-    </div>
-  </header>
+<body data-categoria="veiculos">
+  <div id="site-topo"></div>
 
-  <main class="container">
+  <section class="cabecalho-pagina">
+    <div class="container">
+      <div class="migalha"><a href="index.html">Início</a> › Cartas de Veículos</div>
+      <h1>Consórcios Contemplados de Veículos</h1>
+      <p>Cartas de crédito contempladas prontas para comprar carro, moto, caminhão ou utilitário, novo ou seminovo. Selecione uma ou mais cartas e reserve pelo WhatsApp.</p>
+    </div>
+  </section>
+
+  <main class="container secao">
     <section class="filtros" aria-label="Filtros">
-      <label>
-        Buscar
+      <label>Buscar
         <input type="search" id="busca" placeholder="Código ou administradora">
       </label>
-      <label>
-        Administradora
+      <label>Administradora
         <select id="filtroAdm"><option value="">Todas</option></select>
       </label>
-      <label>
-        Crédito mínimo
+      <label>Crédito mínimo
         <input type="number" id="creditoMin" placeholder="R$" min="0" step="1000">
       </label>
-      <label>
-        Crédito máximo
+      <label>Crédito máximo
         <input type="number" id="creditoMax" placeholder="R$" min="0" step="1000">
       </label>
-      <label>
-        Entrada máxima
+      <label>Entrada máxima
         <input type="number" id="entradaMax" placeholder="R$" min="0" step="1000">
       </label>
       <label class="check">
@@ -62,6 +61,8 @@
         <tbody></tbody>
       </table>
     </div>
+
+    <p class="aviso">Você pode juntar duas ou mais cartas para alcançar um crédito maior: marque as cartas desejadas e clique em "Reservar selecionadas". Os valores podem mudar sem aviso prévio e dependem da confirmação da administradora.</p>
   </main>
 
   <aside id="resumo" class="resumo" hidden>
@@ -74,8 +75,12 @@
     </div>
   </aside>
 
+  <div id="site-rodape"></div>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-  <script src="config.js"></script>
-  <script src="app.js"></script>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/dados.js"></script>
+  <script src="assets/js/layout.js"></script>
+  <script src="assets/js/tabela.js"></script>
 </body>
 </html>

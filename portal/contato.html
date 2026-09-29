@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contato e Dúvidas Frequentes</title>
+  <meta name="description" content="Fale conosco e veja as respostas para as dúvidas mais comuns sobre cartas contempladas.">
+  <link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+  <div id="site-topo"></div>
+
+  <section class="cabecalho-pagina">
+    <div class="container">
+      <div class="migalha"><a href="index.html">Início</a> › Contato</div>
+      <h1>Contato</h1>
+      <p>Fale com um consultor ou veja as dúvidas mais frequentes.</p>
+    </div>
+  </section>
+
+  <main class="secao">
+    <div class="container grade-2">
+      <form id="formContato" class="caixa">
+        <h2 style="text-align:left;margin-top:0">Envie sua mensagem</h2>
+        <label class="campo">Nome
+          <input name="nome" required>
+        </label>
+        <label class="campo">Telefone / WhatsApp
+          <input name="telefone" type="tel" required>
+        </label>
+        <label class="campo">Assunto
+          <select name="assunto">
+            <option>Quero comprar uma carta</option>
+            <option>Quero vender minha carta</option>
+            <option>Outro assunto</option>
+          </select>
+        </label>
+        <label class="campo">Mensagem
+          <textarea name="mensagem" rows="4" required></textarea>
+        </label>
+        <button class="btn" style="width:100%">Enviar pelo WhatsApp</button>
+      </form>
+
+      <div class="faq">
+        <h2 style="text-align:left;margin-top:0">Dúvidas frequentes</h2>
+        <details><summary>O que é uma carta contemplada?</summary>
+          <p>É uma cota de consórcio já contemplada (por sorteio ou lance) que pode ser transferida para você, com o crédito disponível na hora.</p></details>
+        <details><summary>Quanto tempo leva a transferência?</summary>
+          <p>Em média de 7 a 20 dias úteis, dependendo da administradora e da análise de crédito.</p></details>
+        <details><summary>Preciso passar por análise de crédito?</summary>
+          <p>Sim. A administradora analisa o cadastro de quem vai assumir a cota, de forma mais simples que um financiamento bancário.</p></details>
+        <details><summary>Posso juntar mais de uma carta?</summary>
+          <p>Sim, desde que as cartas sejam da mesma administradora. Na tabela, marque as cartas e clique em "Reservar selecionadas".</p></details>
+        <details><summary>Posso usar a carta para quitar um financiamento?</summary>
+          <p>Na maioria das administradoras, sim: cartas de imóveis podem ser usadas para quitar financiamento imobiliário.</p></details>
+        <details><summary>A entrada é paga para quem?</summary>
+          <p>A entrada é paga ao vendedor da cota, com intermediação e contrato. As parcelas seguintes são pagas direto à administradora.</p></details>
+      </div>
+    </div>
+  </main>
+
+  <div id="site-rodape"></div>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/dados.js"></script>
+  <script src="assets/js/layout.js"></script>
+  <script>
+    document.getElementById("formContato").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const d = Object.fromEntries(new FormData(e.target));
+      const msg = `Olá! Meu nome é ${d.nome} (${d.telefone}).\nAssunto: ${d.assunto}\n\n${d.mensagem}`;
+      window.open(Cartas.linkWhats(msg), "_blank", "noopener");
+    });
+  </script>
+</body>
+</html>
