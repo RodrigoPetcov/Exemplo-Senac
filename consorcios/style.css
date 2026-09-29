@@ -1,0 +1,107 @@
+:root {
+  --azul: #0b3d6e;
+  --azul-claro: #e8f0f8;
+  --verde: #1e9e4a;
+  --amarelo: #d99a00;
+  --cinza: #6b7280;
+  --borda: #dde3ea;
+  --fundo: #f5f7fa;
+  --texto: #1f2937;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  background: var(--fundo);
+  color: var(--texto);
+  padding-bottom: 110px;
+}
+
+.container { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+
+.topo { background: var(--azul); color: #fff; padding: 32px 0; margin-bottom: 24px; }
+.topo h1 { margin: 0 0 8px; font-size: 1.8rem; }
+.topo p { margin: 0; opacity: .85; }
+
+/* Filtros */
+.filtros {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 12px;
+  background: #fff;
+  border: 1px solid var(--borda);
+  border-radius: 10px;
+  padding: 16px;
+  align-items: end;
+}
+.filtros label { display: flex; flex-direction: column; gap: 4px; font-size: .85rem; color: var(--cinza); }
+.filtros input, .filtros select {
+  padding: 8px 10px;
+  border: 1px solid var(--borda);
+  border-radius: 6px;
+  font-size: .95rem;
+  color: var(--texto);
+}
+.filtros .check { flex-direction: row; align-items: center; gap: 8px; color: var(--texto); }
+
+.status { color: var(--cinza); font-size: .9rem; margin: 16px 0 8px; }
+
+/* Tabela */
+.tabela-wrap { background: #fff; border: 1px solid var(--borda); border-radius: 10px; overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+th, td { padding: 12px 10px; text-align: left; border-bottom: 1px solid var(--borda); white-space: nowrap; }
+th { background: var(--azul-claro); color: var(--azul); font-weight: 600; position: sticky; top: 0; }
+th[data-col] { cursor: pointer; user-select: none; }
+th.asc::after { content: " ▲"; font-size: .7em; }
+th.desc::after { content: " ▼"; font-size: .7em; }
+.num { text-align: right; }
+.destaque { font-weight: 700; color: var(--azul); }
+tbody tr:hover { background: #fafcff; }
+tr.indisp { opacity: .55; }
+.vazio { text-align: center; color: var(--cinza); padding: 32px; }
+
+.tag { padding: 3px 10px; border-radius: 999px; font-size: .8rem; font-weight: 600; }
+.tag.ok { background: #e3f6ea; color: var(--verde); }
+.tag.res { background: #fff4d6; color: var(--amarelo); }
+.tag.off { background: #eee; color: var(--cinza); }
+
+.btn {
+  display: inline-block;
+  background: var(--verde);
+  color: #fff;
+  text-decoration: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+.btn:hover { filter: brightness(1.1); }
+.btn-sm { padding: 6px 12px; font-size: .85rem; }
+
+/* Resumo das cartas selecionadas */
+.resumo {
+  position: fixed; left: 0; right: 0; bottom: 0;
+  background: #fff;
+  border-top: 3px solid var(--azul);
+  box-shadow: 0 -4px 16px rgba(0,0,0,.08);
+  padding: 12px 0;
+}
+.resumo-inner { display: flex; flex-wrap: wrap; gap: 20px; align-items: center; justify-content: space-between; }
+.resumo span { display: block; font-size: .75rem; color: var(--cinza); }
+.resumo strong { font-size: 1.05rem; color: var(--azul); }
+
+/* Celular: cada linha vira um cartão */
+@media (max-width: 760px) {
+  body { padding-bottom: 200px; }
+  .topo h1 { font-size: 1.4rem; }
+  .tabela-wrap { background: transparent; border: 0; }
+  thead { display: none; }
+  table, tbody, tr, td { display: block; width: 100%; }
+  tr { background: #fff; border: 1px solid var(--borda); border-radius: 10px; margin-bottom: 12px; padding: 8px 12px; }
+  td { display: flex; justify-content: space-between; gap: 12px; border: 0; padding: 6px 0; text-align: right; }
+  td[data-label]::before { content: attr(data-label); color: var(--cinza); font-weight: 500; text-align: left; }
+  td:last-child .btn { width: 100%; text-align: center; }
+  .resumo-inner { gap: 10px 16px; }
+  .resumo .btn { width: 100%; text-align: center; }
+}

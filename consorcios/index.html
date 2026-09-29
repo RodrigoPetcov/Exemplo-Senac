@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Consórcios Contemplados de Imóveis</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topo">
+    <div class="container">
+      <h1>Consórcios Contemplados de Imóveis</h1>
+      <p>Cartas de crédito contempladas prontas para uso. Selecione uma ou mais cartas e reserve pelo WhatsApp.</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="filtros" aria-label="Filtros">
+      <label>
+        Buscar
+        <input type="search" id="busca" placeholder="Código ou administradora">
+      </label>
+      <label>
+        Administradora
+        <select id="filtroAdm"><option value="">Todas</option></select>
+      </label>
+      <label>
+        Crédito mínimo
+        <input type="number" id="creditoMin" placeholder="R$" min="0" step="1000">
+      </label>
+      <label>
+        Crédito máximo
+        <input type="number" id="creditoMax" placeholder="R$" min="0" step="1000">
+      </label>
+      <label>
+        Entrada máxima
+        <input type="number" id="entradaMax" placeholder="R$" min="0" step="1000">
+      </label>
+      <label class="check">
+        <input type="checkbox" id="soDisponiveis" checked> Só disponíveis
+      </label>
+    </section>
+
+    <p id="status" class="status">Carregando cartas…</p>
+
+    <div class="tabela-wrap">
+      <table id="tabela">
+        <thead>
+          <tr>
+            <th></th>
+            <th data-col="codigo">Código</th>
+            <th data-col="administradora">Administradora</th>
+            <th data-col="credito" class="num">Crédito</th>
+            <th data-col="entrada" class="num">Entrada</th>
+            <th data-col="parcelas" class="num">Parcelas</th>
+            <th data-col="saldo" class="num">Saldo devedor</th>
+            <th data-col="vencimento" class="num">Venc.</th>
+            <th data-col="status">Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </main>
+
+  <aside id="resumo" class="resumo" hidden>
+    <div class="container resumo-inner">
+      <div><span>Cartas</span><strong id="sQtd">0</strong></div>
+      <div><span>Crédito total</span><strong id="sCredito">R$ 0,00</strong></div>
+      <div><span>Entrada total</span><strong id="sEntrada">R$ 0,00</strong></div>
+      <div><span>Parcelas/mês</span><strong id="sParcela">R$ 0,00</strong></div>
+      <a id="btnReservarSel" class="btn" target="_blank" rel="noopener">Reservar selecionadas</a>
+    </div>
+  </aside>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
