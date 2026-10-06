@@ -1,5 +1,11 @@
 // Banco de dados SQLite das cartas (usa o SQLite embutido no Node 22+).
-const { DatabaseSync } = require("node:sqlite");
+let DatabaseSync;
+try {
+  ({ DatabaseSync } = require("node:sqlite"));
+} catch {
+  throw new Error(`O banco SQLite precisa do Node.js 22.13 ou mais novo (versão atual: ${process.version}). ` +
+    "Mude a versão do Node.js no painel da hospedagem.");
+}
 const path = require("node:path");
 
 const STATUS = ["Disponível", "Reservada", "Vendida"];

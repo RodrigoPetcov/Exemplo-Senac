@@ -27,7 +27,8 @@ portal/
 ├── assets/js/tabela.js    tabela com filtros, ordenação e seleção
 ├── assets/js/home.js      destaques e simulador da página inicial
 ├── assets/js/edicao.js    modo de edição da tabela (senha, inserir, remover, salvar)
-├── servidor/server.js     servidor: entrega as páginas e a API do banco
+├── servidor/server.js     ▶️  arquivo de entrada: inicia o servidor (npm start / hospedagem)
+├── servidor/app.js        servidor: entrega as páginas e a API do banco
 ├── servidor/banco.js      banco SQLite (criado sozinho em servidor/cartas.db)
 ├── package.json           comandos npm start / npm test
 └── .env.exemplo           modelo das configurações secretas (senha)
@@ -88,6 +89,27 @@ Sem disco persistente, o banco é apagado a cada nova publicação.
 O servidor entrega o site inteiro (todas as páginas), então não precisa de outra hospedagem. Se as páginas ficarem em outro lugar, preencha `API_URL` em `config.js` com o endereço do servidor e `CORS_ORIGEM` no servidor com o endereço do site.
 
 **Backup:** copie periodicamente o arquivo `cartas.db`.
+
+### Hostinger (Node.js)
+
+No painel da Hostinger, configure o app Node.js assim:
+
+| Campo | Valor |
+|---|---|
+| Diretório raiz do app | `portal` (a pasta onde está o `package.json`) |
+| Arquivo de entrada (*entry file*) | `servidor/server.js` |
+| Comando de início | `npm start` |
+| Versão do Node.js | **22.x ou mais nova** (precisa ser 22.13+, por causa do SQLite) |
+| Variáveis de ambiente | `SENHA_EDICAO` (obrigatória) e, se possível, `BANCO_ARQUIVO` |
+
+- **Porta:** não defina `PORTA` na Hostinger. O servidor usa a porta que a Hostinger informa em `PORT`.
+- **Sem `SENHA_EDICAO`:** o site fica no ar, mas o botão Editar avisa que a edição está desativada. O motivo também aparece nos logs.
+- **Banco:** para não perder as cartas a cada nova publicação, aponte `BANCO_ARQUIVO` para uma pasta fora da pasta do app, se o seu plano permitir (ex.: `/home/SEU_USUARIO/dados/cartas.db`). E faça backup do arquivo.
+
+**Erro "App did not call listen() within 3 seconds":**
+1. Confira se o arquivo de entrada é `servidor/server.js`.
+2. Confira se a versão do Node.js é 22.13 ou mais nova.
+3. Veja os logs do app.
 
 ## Testes
 

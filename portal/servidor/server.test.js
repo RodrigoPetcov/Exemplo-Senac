@@ -3,7 +3,7 @@ const assert = require("node:assert");
 const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
-const { criarServidor } = require("./server");
+const { criarServidor } = require("./app");
 
 const pasta = fs.mkdtempSync(path.join(os.tmpdir(), "cartas-"));
 let servidor, base;
@@ -82,4 +82,17 @@ test("bloqueia após muitas senhas erradas", async () => {
   for (let i = 0; i < 5; i++) await login("x");
   const res = await req("/api/login", { method: "POST", body: JSON.stringify({ senha: "segredo" }) });
   assert.strictEqual(res.status, 429);
+});
+
+test("sem SENHA_EDICAO o site continua no ar e a edição fica desativada", async () => {
+  const outro = criarServidor({ senha: "", arquivoBanco: path.join(pasta, "sem-senha.db") });
+  await new Promise((r) => outro.listen(0, r));
+  const url = `http://localhost:${outro.address().port}`;
+  try {
+    assert.strictEqual((await fetch(`${url}/api/cartas`)).status, 200);
+    const res = await fetch(`${url}/api/login`, { method: "POST", body: JSON.stringify({ senha: "" }) });
+    assert.strictEqual(res.status, 503);
+  } finally {
+    outro.close();
+  }
 });
