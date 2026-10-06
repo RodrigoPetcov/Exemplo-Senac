@@ -141,7 +141,7 @@
 
   $("btnAdicionar").addEventListener("click", () => {
     linhas.unshift({
-      _novo: true, _temp: proximoTemp++, codigo: "", administradora: "", tipo: categoria === "imoveis" ? "Imóvel" : "Veículo",
+      _novo: true, _temp: proximoTemp++, codigo: "", administradora: "", tipo: "Imóvel",
       credito: 0, entrada: 0, qtdParcelas: 0, valorParcela: 0, saldo: 0, vencimento: "", status: "Disponível",
     });
     render();

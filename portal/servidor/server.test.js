@@ -21,10 +21,16 @@ const login = async (senha = "segredo") => (await req("/api/login", { method: "P
 const salvar = (token, lote) =>
   req("/api/cartas?categoria=imoveis", { method: "POST", body: JSON.stringify(lote), headers: { Authorization: `Bearer ${token}` } });
 
-test("lista as cartas de exemplo importadas na primeira execução", async () => {
+test("banco começa vazio e grava as cartas enviadas", async () => {
+  assert.deepStrictEqual(await (await req("/api/cartas?categoria=imoveis")).json(), []);
+  const { token } = await login();
+  const inserir = ["1001", "1002", "1003"].map((codigo, i) =>
+    ({ codigo, administradora: "Adm", credito: 100000 * (i + 1), entrada: 30000, qtdParcelas: 100, valorParcela: 900 }));
+  const res = await salvar(token, { inserir });
+  assert.strictEqual(res.status, 200);
   const cartas = await (await req("/api/cartas?categoria=imoveis")).json();
-  assert.strictEqual(cartas.length, 10);
-  assert.strictEqual(cartas.find((c) => c.codigo === "1001").credito, 150000);
+  assert.strictEqual(cartas.length, 3);
+  assert.strictEqual(cartas.find((c) => c.codigo === "1001").credito, 100000);
 });
 
 test("recusa salvar sem senha e com senha errada", async () => {
@@ -45,7 +51,7 @@ test("insere, altera e remove em um lote", async () => {
   });
   assert.strictEqual(res.status, 200);
   const depois = await res.json();
-  assert.strictEqual(depois.length, 10);
+  assert.strictEqual(depois.length, 3);
   assert.strictEqual(depois.find((c) => c.codigo === "9999").credito, 123456.79);
   assert.strictEqual(depois.find((c) => c.codigo === "1002").status, "Reservada");
   assert.ok(!depois.some((c) => c.codigo === "1003"));

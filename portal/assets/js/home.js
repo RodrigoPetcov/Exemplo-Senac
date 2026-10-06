@@ -2,10 +2,10 @@
 (function () {
   const { carregar, disponivel, linkReserva, brl, esc } = window.Cartas;
 
-  function cartao(c, categoria) {
+  function cartao(c) {
     return `<article class="card-carta">
       <div class="card-topo">
-        <span class="tag ok">${categoria === "imoveis" ? "Imóvel" : "Veículo"}</span>
+        <span class="tag ok">Imóvel</span>
         <span class="card-cod">Carta ${esc(c.codigo)}</span>
       </div>
       <p class="card-adm">${esc(c.administradora)}</p>
@@ -19,13 +19,11 @@
   }
 
   const alvo = document.getElementById("destaques");
-  Promise.all([carregar("imoveis"), carregar("veiculos")])
-    .then(([imoveis, veiculos]) => {
-      const pega = (lista, cat, n) =>
-        lista.filter(disponivel).sort((a, b) => a.entrada / a.credito - b.entrada / b.credito)
-          .slice(0, n).map((c) => cartao(c, cat));
-      alvo.innerHTML = [...pega(imoveis, "imoveis", 4), ...pega(veiculos, "veiculos", 2)].join("") ||
-        "<p>Nenhuma carta disponível no momento.</p>";
+  carregar("imoveis")
+    .then((imoveis) => {
+      alvo.innerHTML = imoveis.filter(disponivel)
+        .sort((a, b) => a.entrada / a.credito - b.entrada / b.credito)
+        .slice(0, 6).map(cartao).join("") || "<p>Nenhuma carta disponível no momento.</p>";
     })
     .catch(() => (alvo.innerHTML = "<p>Não foi possível carregar as cartas agora.</p>"));
 
@@ -35,6 +33,6 @@
     const f = e.target;
     const valor = parseFloat(f.valor.value) || 0;
     const qs = valor ? `?min=${Math.round(valor * 0.8)}&max=${Math.round(valor * 1.2)}` : "";
-    location.href = `${f.categoria.value}.html${qs}`;
+    location.href = `imoveis.html${qs}`;
   });
 })();

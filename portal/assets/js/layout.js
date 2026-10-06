@@ -7,7 +7,6 @@
   const MENU = [
     ["index.html", "Início"],
     ["imoveis.html", "Cartas de Imóveis", "Imóveis"],
-    ["veiculos.html", "Cartas de Veículos", "Veículos"],
     ["como-funciona.html", "Como Funciona"],
     ["venda-sua-carta.html", "Venda sua Carta"],
     ["sobre.html", "Quem Somos"],

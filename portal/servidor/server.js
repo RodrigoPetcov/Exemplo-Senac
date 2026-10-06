@@ -16,11 +16,11 @@ if (fs.existsSync(path.join(RAIZ, ".env"))) process.loadEnvFile(path.join(RAIZ, 
 const TOKEN_VALIDADE_MS = 2 * 60 * 60 * 1000;
 const MAX_TENTATIVAS = 5;                 // senhas erradas permitidas…
 const JANELA_TENTATIVAS_MS = 15 * 60 * 1000; // …a cada 15 minutos, por IP
-const CATEGORIAS_BANCO = ["imoveis"];     // categorias que usam o banco (as outras seguem na planilha)
+const CATEGORIAS_BANCO = ["imoveis"];     // categorias de cartas guardadas no banco
 
 const TIPOS = {
   ".html": "text/html; charset=utf-8", ".css": "text/css; charset=utf-8", ".js": "text/javascript; charset=utf-8",
-  ".csv": "text/csv; charset=utf-8", ".json": "application/json", ".png": "image/png", ".jpg": "image/jpeg",
+  ".json": "application/json", ".png": "image/png", ".jpg": "image/jpeg",
   ".jpeg": "image/jpeg", ".webp": "image/webp", ".svg": "image/svg+xml", ".ico": "image/x-icon",
 };
 // Pastas e arquivos do projeto que nunca devem ser entregues ao navegador.
@@ -32,10 +32,6 @@ function criarServidor({ senha, arquivoBanco = banco.ARQUIVO_PADRAO, corsOrigem 
   if (!senha) throw new Error("Defina a variável SENHA_EDICAO (veja o README).");
   const hashSenha = hash(senha);
   const db = banco.abrir(arquivoBanco);
-  for (const cat of CATEGORIAS_BANCO) {
-    const n = banco.popularSeVazio(db, cat, path.join(RAIZ, "dados", `${cat}-exemplo.csv`));
-    if (n) console.log(`Banco vazio: ${n} cartas de exemplo importadas para "${cat}".`);
-  }
 
   const tokens = new Map();     // token -> expira em (ms)
   const tentativas = new Map(); // ip -> { n, desde }
@@ -98,7 +94,7 @@ function criarServidor({ senha, arquivoBanco = banco.ARQUIVO_PADRAO, corsOrigem 
 
     if (url.pathname === "/api/cartas") {
       const cat = categoriaDe(url);
-      if (!cat) return json(res, 404, { erro: "Categoria não usa o banco de dados." });
+      if (!cat) return json(res, 404, { erro: "Categoria inexistente." });
       if (req.method === "GET") return json(res, 200, banco.listar(db, cat));
       if (req.method === "POST") {
         if (!autorizado(req)) return json(res, 401, { erro: "Sessão de edição expirada. Digite a senha novamente." });

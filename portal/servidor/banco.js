@@ -1,10 +1,8 @@
 // Banco de dados SQLite das cartas (usa o SQLite embutido no Node 22+).
 const { DatabaseSync } = require("node:sqlite");
-const fs = require("node:fs");
 const path = require("node:path");
 
 const STATUS = ["Disponível", "Reservada", "Vendida"];
-const CATEGORIAS = ["imoveis", "veiculos"];
 
 // Campos editáveis: [nome na API, coluna no banco, tipo]
 const CAMPOS = [
@@ -119,86 +117,7 @@ function salvarLote(db, categoria, { inserir = [], atualizar = [], remover = [] 
   return listar(db, categoria);
 }
 
-// ---------- Importação de CSV (planilha exportada) ----------
-
-function lerCsv(texto) {
-  const linhas = [];
-  let campo = "", linha = [], aspas = false;
-  for (let i = 0; i < texto.length; i++) {
-    const ch = texto[i];
-    if (aspas) {
-      if (ch === '"' && texto[i + 1] === '"') { campo += '"'; i++; }
-      else if (ch === '"') aspas = false;
-      else campo += ch;
-    } else if (ch === '"') aspas = true;
-    else if (ch === ",") { linha.push(campo); campo = ""; }
-    else if (ch === "\n" || ch === "\r") {
-      if (ch === "\r" && texto[i + 1] === "\n") i++;
-      linha.push(campo); campo = "";
-      if (linha.some((x) => x.trim())) linhas.push(linha);
-      linha = [];
-    } else campo += ch;
-  }
-  linha.push(campo);
-  if (linha.some((x) => x.trim())) linhas.push(linha);
-  return linhas;
-}
-
-const norm = (s) =>
-  String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "");
-
-const NOMES = {
-  codigo: ["codigo", "cod", "id", "carta"],
-  administradora: ["administradora", "adm", "empresa"],
-  tipo: ["tipo", "segmento", "categoria"],
-  credito: ["credito", "valorcredito", "valordocredito"],
-  entrada: ["entrada", "valorentrada", "agio"],
-  qtdParcelas: ["qtdparcelas", "parcelas", "nparcelas", "quantidadeparcelas", "prazo"],
-  valorParcela: ["valorparcela", "valordaparcela", "parcela"],
-  saldo: ["saldodevedor", "saldo"],
-  vencimento: ["vencimento", "diavencimento", "venc"],
-  status: ["status", "situacao"],
-};
-
-function numeroBr(v) {
-  let s = String(v || "").replace(/[^\d,.-]/g, "");
-  if (!s) return 0;
-  if (s.includes(",")) s = s.replace(/\./g, "").replace(",", ".");
-  else if ((s.match(/\./g) || []).length > 1) s = s.replace(/\./g, "");
-  return parseFloat(s) || 0;
-}
-
-function cartasDoCsv(texto) {
-  const [cab, ...linhas] = lerCsv(texto.replace(/^﻿/, ""));
-  if (!cab) return [];
-  const indice = {};
-  for (const [campo, nomes] of Object.entries(NOMES)) indice[campo] = cab.findIndex((h) => nomes.includes(norm(h)));
-  const pega = (l, campo) => (indice[campo] >= 0 ? (l[indice[campo]] || "").trim() : "");
-  const statusOk = (s) => STATUS.find((x) => norm(x) === norm(s)) || "Disponível";
-  return linhas.map((l) => ({
-    codigo: pega(l, "codigo"),
-    administradora: pega(l, "administradora"),
-    tipo: pega(l, "tipo"),
-    credito: numeroBr(pega(l, "credito")),
-    entrada: numeroBr(pega(l, "entrada")),
-    qtdParcelas: parseInt(pega(l, "qtdParcelas"), 10) || 0,
-    valorParcela: numeroBr(pega(l, "valorParcela")),
-    saldo: numeroBr(pega(l, "saldo")),
-    vencimento: pega(l, "vencimento"),
-    status: statusOk(pega(l, "status")),
-  })).filter((c) => c.codigo);
-}
-
-// Na primeira execução, preenche o banco vazio com a planilha de exemplo.
-function popularSeVazio(db, categoria, arquivoCsv) {
-  const { n } = db.prepare("SELECT COUNT(*) n FROM cartas WHERE categoria = ?").get(categoria);
-  if (n > 0 || !fs.existsSync(arquivoCsv)) return 0;
-  const cartas = cartasDoCsv(fs.readFileSync(arquivoCsv, "utf8"));
-  salvarLote(db, categoria, { inserir: cartas });
-  return cartas.length;
-}
-
 module.exports = {
-  abrir, listar, salvarLote, validar, cartasDoCsv, popularSeVazio, STATUS, CATEGORIAS,
+  abrir, listar, salvarLote, validar, STATUS,
   ARQUIVO_PADRAO: path.join(__dirname, "cartas.db"),
 };

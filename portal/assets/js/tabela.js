@@ -26,9 +26,7 @@
       })
       .catch((err) => {
         $("status").textContent =
-          Cartas.usaBanco(categoria)
-            ? "Não foi possível conectar ao banco de dados. O site precisa estar rodando pelo servidor (npm start)."
-            : "Não foi possível carregar a planilha. Verifique se ela está compartilhada/publicada (veja o README).";
+          "Não foi possível conectar ao banco de dados. O site precisa estar rodando pelo servidor (npm start).";
         console.error(err);
       });
   }
