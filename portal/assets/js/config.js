@@ -19,6 +19,13 @@ window.CONFIG = {
     veiculos: "",
   },
 
+  // Categorias cujas cartas ficam no banco de dados do servidor (editáveis pelo botão "Editar").
+  // As demais continuam lendo a planilha acima. Requer o site rodando pelo servidor (npm start).
+  BANCO: ["imoveis"],
+  // Endereço do servidor. Deixe vazio quando o site é entregue pelo próprio servidor.
+  // Preencha só se as páginas estiverem hospedadas em outro lugar, ex.: "https://api.seusite.com.br"
+  API_URL: "",
+
   // Recarregar as tabelas automaticamente a cada N minutos (0 = desligado)
   ATUALIZAR_MINUTOS: 5,
 };

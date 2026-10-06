@@ -19,6 +19,7 @@
   </section>
 
   <main class="container secao">
+    <div id="areaPublica">
     <section class="filtros" aria-label="Filtros">
       <label>Buscar
         <input type="search" id="busca" placeholder="Código ou administradora">
@@ -63,7 +64,63 @@
     </div>
 
     <p class="aviso">Você pode juntar duas ou mais cartas para alcançar um crédito maior: marque as cartas desejadas e clique em "Reservar selecionadas". Os valores podem mudar sem aviso prévio e dependem da confirmação da administradora.</p>
+
+    <div class="edicao-barra">
+      <button type="button" id="btnEditar" class="btn btn-editar">✏️ Editar</button>
+    </div>
+    </div>
+
+    <!-- Modo de edição (aparece depois da senha validada) -->
+    <section id="editor" class="editor" hidden aria-label="Edição das cartas">
+      <div class="editor-topo">
+        <div>
+          <h2>Editando cartas de imóveis</h2>
+          <p id="editorTotal" class="status"></p>
+        </div>
+        <button type="button" id="btnAdicionar" class="btn btn-secundario">+ Adicionar carta</button>
+      </div>
+      <div class="tabela-wrap">
+        <table id="tabelaEditor">
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Administradora</th>
+              <th>Crédito (R$)</th>
+              <th>Entrada (R$)</th>
+              <th>Qtd parc.</th>
+              <th>Valor parcela (R$)</th>
+              <th>Saldo devedor (R$)</th>
+              <th>Venc.</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <p id="editorMsg" class="editor-msg" role="status"></p>
+      <div class="editor-acoes">
+        <button type="button" id="btnSair" class="btn btn-claro">Sair da edição</button>
+        <button type="button" id="btnDescartar" class="btn btn-claro">Descartar alterações</button>
+        <button type="button" id="btnSalvar" class="btn">Salvar alterações</button>
+      </div>
+    </section>
   </main>
+
+  <dialog id="dlgSenha" class="dialogo" aria-labelledby="dlgSenhaTitulo">
+    <form id="formSenha">
+      <h3 id="dlgSenhaTitulo">🔒 Acesso à edição</h3>
+      <p>Digite a senha de segurança para editar a tabela.</p>
+      <label class="campo">Senha
+        <input type="password" id="campoSenha" autocomplete="current-password" required>
+      </label>
+      <p id="senhaErro" class="senha-erro" role="alert"></p>
+      <div class="editor-acoes">
+        <button type="button" id="btnCancelarSenha" class="btn btn-claro">Cancelar</button>
+        <button type="submit" class="btn">Entrar</button>
+      </div>
+    </form>
+  </dialog>
 
   <aside id="resumo" class="resumo" hidden>
     <div class="container resumo-inner">
@@ -82,5 +139,6 @@
   <script src="assets/js/dados.js"></script>
   <script src="assets/js/layout.js"></script>
   <script src="assets/js/tabela.js"></script>
+  <script src="assets/js/edicao.js"></script>
 </body>
 </html>

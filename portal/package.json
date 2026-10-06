@@ -1,0 +1,15 @@
+{
+  "name": "portal-cartas-contempladas",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Portal de cartas contempladas com tabela de imóveis salva em banco SQLite",
+  "main": "servidor/server.js",
+  "scripts": {
+    "start": "node --disable-warning=ExperimentalWarning servidor/server.js",
+    "importar": "node --disable-warning=ExperimentalWarning servidor/importar.js",
+    "test": "node --disable-warning=ExperimentalWarning --test servidor/server.test.js"
+  },
+  "engines": {
+    "node": ">=22.13"
+  }
+}

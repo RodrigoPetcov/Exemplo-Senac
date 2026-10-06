@@ -75,7 +75,19 @@ window.Cartas = (function () {
       .filter((c) => c.codigo || c.credito);
   }
 
+  const usaBanco = (categoria) => (cfg.BANCO || []).includes(categoria);
+  const urlApi = (rota) => `${cfg.API_URL || ""}${rota}`;
+
+  // Lê as cartas do banco de dados do servidor.
+  async function carregarDoBanco(categoria) {
+    const res = await fetch(urlApi(`/api/cartas?categoria=${categoria}`), { cache: "no-store" });
+    if (!res.ok) throw new Error(`Servidor respondeu ${res.status}`);
+    const lista = await res.json();
+    return lista.map((c) => ({ ...c, saldo: c.saldo || c.qtdParcelas * c.valorParcela }));
+  }
+
   function carregar(categoria) {
+    if (usaBanco(categoria)) return carregarDoBanco(categoria);
     const url = urlCsv(categoria);
     const sep = url.includes("?") ? "&" : "?"; // evita cache do navegador
     return new Promise((resolve, reject) => {
@@ -101,5 +113,5 @@ window.Cartas = (function () {
     return linkWhats(`Olá! Tenho interesse em reservar:\n${linhas.join("\n")}`);
   }
 
-  return { carregar, disponivel, linkWhats, linkReserva, brl, norm, esc };
+  return { carregar, disponivel, linkWhats, linkReserva, brl, norm, esc, urlApi, usaBanco };
 })();

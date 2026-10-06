@@ -235,3 +235,45 @@ body.com-resumo .whats-flutuante { bottom: 100px; }
   .resumo-inner { gap: 10px 16px; }
   .resumo .btn { width: 100%; text-align: center; }
 }
+
+/* ---------- Modo de edição da tabela ---------- */
+.edicao-barra { display: flex; justify-content: flex-end; margin-top: 16px; }
+.btn-editar { background: var(--azul); }
+.btn-secundario { background: var(--azul); }
+.btn-claro { background: #fff; color: var(--azul); border: 1px solid var(--borda); }
+.btn:disabled { opacity: .5; cursor: not-allowed; filter: none; }
+body.editando .resumo { display: none; }
+
+.editor-topo { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 12px; }
+.editor-topo h2 { margin: 0; font-size: 1.4rem; }
+.editor-topo .status { margin: 4px 0 0; }
+#tabelaEditor td { padding: 6px; }
+#tabelaEditor input, #tabelaEditor select {
+  width: 100%; min-width: 72px; padding: 7px 6px; border: 1px solid var(--borda); border-radius: 6px; font: inherit; font-size: .9rem;
+}
+#tabelaEditor input[data-campo="codigo"] { min-width: 70px; }
+#tabelaEditor input[data-campo="administradora"] { min-width: 130px; }
+#tabelaEditor select { min-width: 118px; }
+#tabelaEditor th { white-space: normal; font-size: .85rem; }
+.btn-remover { white-space: nowrap; }
+#tabelaEditor input:invalid { border-color: #d33; }
+#tabelaEditor tr.alterada { background: #fff8e1; }
+#tabelaEditor tr.nova { background: #e8f7ee; }
+.btn-remover { background: none; border: 1px solid #f1c0c0; color: #c0392b; border-radius: 6px; padding: 6px 10px; cursor: pointer; font-size: .85rem; }
+.btn-remover:hover { background: #fdecec; }
+.editor-msg { min-height: 1.4em; margin: 12px 0 0; color: var(--verde); font-weight: 600; }
+.editor-msg.erro { color: #c0392b; }
+.editor-acoes { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; margin-top: 12px; }
+
+.dialogo { border: 0; border-radius: var(--raio); padding: 24px; width: min(400px, calc(100% - 32px)); box-shadow: 0 20px 50px rgba(0,0,0,.3); }
+.dialogo::backdrop { background: rgba(7,42,77,.55); }
+.dialogo h3 { margin: 0 0 8px; }
+.dialogo p { margin: 0 0 16px; color: var(--cinza); }
+.senha-erro { color: #c0392b !important; min-height: 1.2em; margin: 0 !important; font-size: .9rem; }
+
+@media (max-width: 640px) {
+  #tabelaEditor td { display: flex; align-items: center; padding: 4px 0; }
+  #tabelaEditor td input, #tabelaEditor td select { flex: 0 0 58%; width: 58%; min-width: 0; }
+  #tabelaEditor td:last-child { justify-content: flex-end; }
+  .editor-acoes .btn { flex: 1; }
+}

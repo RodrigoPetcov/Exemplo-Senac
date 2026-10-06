@@ -26,7 +26,9 @@
       })
       .catch((err) => {
         $("status").textContent =
-          "Não foi possível carregar a planilha. Verifique se ela está compartilhada/publicada (veja o README).";
+          Cartas.usaBanco(categoria)
+            ? "Não foi possível conectar ao banco de dados. O site precisa estar rodando pelo servidor (npm start)."
+            : "Não foi possível carregar a planilha. Verifique se ela está compartilhada/publicada (veja o README).";
         console.error(err);
       });
   }
@@ -118,6 +120,9 @@
     e.target.checked ? selecionadas.add(cod) : selecionadas.delete(cod);
     atualizarResumo();
   });
+
+  // Usado pelo modo de edição para mostrar os dados recém-salvos.
+  window.TabelaCartas = { recarregar: atualizar };
 
   atualizar();
   if (cfg.ATUALIZAR_MINUTOS > 0) setInterval(atualizar, cfg.ATUALIZAR_MINUTOS * 60000);

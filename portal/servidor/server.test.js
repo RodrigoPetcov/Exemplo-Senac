@@ -1,0 +1,79 @@
+const { test, before, after } = require("node:test");
+const assert = require("node:assert");
+const fs = require("node:fs");
+const os = require("node:os");
+const path = require("node:path");
+const { criarServidor } = require("./server");
+
+const pasta = fs.mkdtempSync(path.join(os.tmpdir(), "cartas-"));
+let servidor, base;
+
+before(async () => {
+  servidor = criarServidor({ senha: "segredo", arquivoBanco: path.join(pasta, "teste.db") });
+  await new Promise((r) => servidor.listen(0, r));
+  base = `http://localhost:${servidor.address().port}`;
+});
+after(() => { servidor.close(); fs.rmSync(pasta, { recursive: true, force: true }); });
+
+const req = (rota, opcoes = {}) =>
+  fetch(base + rota, { ...opcoes, headers: { "Content-Type": "application/json", ...(opcoes.headers || {}) } });
+const login = async (senha = "segredo") => (await req("/api/login", { method: "POST", body: JSON.stringify({ senha }) })).json();
+const salvar = (token, lote) =>
+  req("/api/cartas?categoria=imoveis", { method: "POST", body: JSON.stringify(lote), headers: { Authorization: `Bearer ${token}` } });
+
+test("lista as cartas de exemplo importadas na primeira execução", async () => {
+  const cartas = await (await req("/api/cartas?categoria=imoveis")).json();
+  assert.strictEqual(cartas.length, 10);
+  assert.strictEqual(cartas.find((c) => c.codigo === "1001").credito, 150000);
+});
+
+test("recusa salvar sem senha e com senha errada", async () => {
+  assert.strictEqual((await salvar("", { inserir: [] })).status, 401);
+  assert.strictEqual((await login("errada")).erro, "Senha incorreta.");
+});
+
+test("insere, altera e remove em um lote", async () => {
+  const { token } = await login();
+  const antes = await (await req("/api/cartas")).json();
+  const alvo = antes.find((c) => c.codigo === "1002");
+  const removida = antes.find((c) => c.codigo === "1003");
+
+  const res = await salvar(token, {
+    inserir: [{ codigo: "9999", administradora: "Nova", credito: 123456.789, entrada: 1000, status: "Disponível" }],
+    atualizar: [{ ...alvo, entrada: 50000, status: "Reservada" }],
+    remover: [removida.id],
+  });
+  assert.strictEqual(res.status, 200);
+  const depois = await res.json();
+  assert.strictEqual(depois.length, 10);
+  assert.strictEqual(depois.find((c) => c.codigo === "9999").credito, 123456.79);
+  assert.strictEqual(depois.find((c) => c.codigo === "1002").status, "Reservada");
+  assert.ok(!depois.some((c) => c.codigo === "1003"));
+});
+
+test("rejeita código duplicado sem gravar nada", async () => {
+  const { token } = await login();
+  const res = await salvar(token, { inserir: [{ codigo: "8888" }, { codigo: "8888" }] });
+  assert.strictEqual(res.status, 400);
+  assert.match((await res.json()).erro, /mesmo código/);
+  const cartas = await (await req("/api/cartas")).json();
+  assert.ok(!cartas.some((c) => c.codigo === "8888"));
+});
+
+test("rejeita valores inválidos", async () => {
+  const { token } = await login();
+  const res = await salvar(token, { inserir: [{ codigo: "7777", credito: -5 }] });
+  assert.strictEqual(res.status, 400);
+});
+
+test("não entrega arquivos do servidor nem o banco", async () => {
+  for (const rota of ["/servidor/server.js", "/servidor/teste.db", "/package.json", "/.env", "/%2e%2e/README.md"])
+    assert.strictEqual((await req(rota)).status, 404, rota);
+  assert.strictEqual((await req("/imoveis.html")).status, 200);
+});
+
+test("bloqueia após muitas senhas erradas", async () => {
+  for (let i = 0; i < 5; i++) await login("x");
+  const res = await req("/api/login", { method: "POST", body: JSON.stringify({ senha: "segredo" }) });
+  assert.strictEqual(res.status, 429);
+});
