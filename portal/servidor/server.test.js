@@ -96,3 +96,10 @@ test("sem SENHA_EDICAO o site continua no ar e a edição fica desativada", asyn
     outro.close();
   }
 });
+
+test("/api/status responde para diagnóstico", async () => {
+  const st = await (await req("/api/status")).json();
+  assert.strictEqual(st.ok, true);
+  assert.strictEqual(st.edicaoAtiva, true);
+  assert.match(st.node, /^v\d+/);
+});

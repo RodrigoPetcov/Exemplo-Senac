@@ -23,6 +23,20 @@
 
   // ---------- Senha ----------
 
+  // A resposta não veio do servidor Node (sem JSON): normalmente o site está sendo
+  // entregue como arquivos estáticos pela hospedagem, sem passar pelo app Node.
+  function erroForaDoServidor(status) {
+    const dicas = {
+      403: "a hospedagem bloqueou o envio (firewall)",
+      404: "o endereço /api/login não existe aqui: o site parece estar sendo entregue sem o servidor Node",
+      405: "o site parece estar sendo entregue sem o servidor Node",
+      502: "o servidor Node está parado ou travou",
+      503: "o servidor Node está parado ou reiniciando",
+    };
+    const dica = dicas[status] || "a resposta não veio do servidor do portal";
+    return `Não foi possível validar a senha (erro ${status}: ${dica}). Abra /api/status no navegador para diagnosticar.`;
+  }
+
   function pedirSenha() {
     $("senhaErro").textContent = "";
     $("formSenha").reset();
@@ -41,7 +55,8 @@
         body: JSON.stringify({ senha: $("campoSenha").value }),
       });
       const corpo = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(corpo.erro || "Não foi possível validar a senha.");
+      if (!res.ok) throw new Error(corpo.erro || erroForaDoServidor(res.status));
+      if (!corpo.token) throw new Error(erroForaDoServidor(res.status));
       tokenMemoria = corpo.token;
       token.gravar(corpo.token);
       dlg.close();

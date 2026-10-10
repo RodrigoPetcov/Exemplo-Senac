@@ -71,6 +71,18 @@ function criarServidor({ senha, arquivoBanco = banco.ARQUIVO_PADRAO, corsOrigem 
   async function api(req, res, url) {
     const ip = req.socket.remoteAddress;
 
+    // Diagnóstico: confirma que o app Node está respondendo (abrir no navegador).
+    if (url.pathname === "/api/status" && req.method === "GET") {
+      const { n } = db.prepare("SELECT COUNT(*) n FROM cartas").get();
+      return json(res, 200, {
+        ok: true,
+        node: process.version,
+        edicaoAtiva: Boolean(hashSenha),
+        cartasNoBanco: n,
+        arquivoBanco: path.basename(arquivoBanco),
+      });
+    }
+
     if (url.pathname === "/api/login" && req.method === "POST") {
       if (!hashSenha)
         return json(res, 503, { erro: "Edição desativada: a senha (SENHA_EDICAO) não foi configurada no servidor." });
